@@ -73,6 +73,9 @@ def select_resize_mode(user_argument):
     elif user_argument.height:
         image = only_height(user_argument.height,
                             user_argument.infile, )
+    if ((user_argument.width and user_argument.scale) or
+            (user_argument.height and user_argument.scale)):
+        image = print('Please enter availiable arguments combination!')
     return image
 
 
@@ -102,7 +105,8 @@ if __name__ == '__main__':
         else:
             pathfile = user_argument.outfile
         save_new_image(image, pathfile)
+        print('Success! Image resized!')
     except (FileNotFoundError, OSError) as error:
         print(error)
-    else:
-        print('Success! Image resized!')
+    except AttributeError:
+        image
