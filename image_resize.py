@@ -24,7 +24,7 @@ def check_proportions(infile, image):
     original_height = original_image.size[1]
     resized_width = resized_image.size[0]
     resized_height = resized_image.size[1]
-    numbers_after_point=2
+    numbers_after_point = 2
     infile_proportions = round((original_width / original_height),
                                numbers_after_point)
     outfile_proportions = round((resized_width / resized_height),
@@ -39,19 +39,19 @@ def select_resize_mode(user_argument):
     if user_argument.scale:
         new_width = int(image.size[0] / user_argument.scale)
         new_height = int(image.size[1] / user_argument.scale)
-        resized_image = image.resize((new_width, new_height))
+        resized_img = image.resize((new_width, new_height))
     elif user_argument.width and user_argument.height:
-        resized_image = image.resize((user_argument.width, user_argument.height))
+        resized_img = image.resize((user_argument.width, user_argument.height))
     elif user_argument.width:
         new_height = int(image.size[1] / (image.size[0] / user_argument.width))
-        resized_image = image.resize((user_argument.width, new_height))
+        resized_img = image.resize((user_argument.width, new_height))
     elif user_argument.height:
         new_width = int(image.size[0] / (image.size[1] / user_argument.height))
-        resized_image = image.resize((new_width, user_argument.height))
+        resized_img = image.resize((new_width, user_argument.height))
     if ((user_argument.width and user_argument.scale) or
             (user_argument.height and user_argument.scale)):
-        resized_image = print('Please enter availiable arguments combination!')
-    return resized_image
+        resized_img = print('Please enter availiable arguments combination!')
+    return resized_img
 
 
 def create_filepath_to_save_image(image, infile):
