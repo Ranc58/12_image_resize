@@ -30,8 +30,11 @@ def check_proportions(infile, image):
     outfile_proportions = round((resized_width / resized_height),
                                 numbers_after_point)
     attention = 'Attention! Image out with the wrong proportions!'
+    match_proportions = 'Proportions OK.'
     if infile_proportions != outfile_proportions:
         return attention
+    else:
+        return match_proportions
 
 
 def select_resize_mode(user_argument):
@@ -54,12 +57,15 @@ def select_resize_mode(user_argument):
     return resized_img
 
 
-def create_filepath_to_save_image(image, infile):
-    width = image.size[0]
-    height = image.size[1]
-    filepath, image = os.path.splitext(infile)
-    new_filepath = '{}__{}x{}{}'.format(filepath, height, width, image)
-    return new_filepath
+def create_filepath_to_save_image(image, user_argument):
+    if user_argument.outfile is None:
+        width = image.size[0]
+        height = image.size[1]
+        filepath, image = os.path.splitext(user_argument.infile)
+        new_filepath = '{}__{}x{}{}'.format(filepath, height, width, image)
+        return new_filepath
+    else:
+        return user_argument.outfile
 
 
 def save_new_image(image, pathfile):
@@ -71,14 +77,8 @@ if __name__ == '__main__':
     user_argument = parser.parse_args()
     try:
         image = select_resize_mode(user_argument)
-        check = check_proportions(user_argument.infile, image)
-        if check is not None:
-            print(check)
-        if user_argument.outfile is None:
-            pathfile = create_filepath_to_save_image(image,
-                                                     user_argument.infile)
-        else:
-            pathfile = user_argument.outfile
+        print(check_proportions(user_argument.infile, image))
+        pathfile = create_filepath_to_save_image(image, user_argument)
         save_new_image(image, pathfile)
         print('Success! Image resized!')
     except (FileNotFoundError, OSError) as error:
