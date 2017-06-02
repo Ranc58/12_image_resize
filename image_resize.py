@@ -1,4 +1,3 @@
-import sys
 import os
 import argparse
 from PIL import Image
@@ -60,6 +59,23 @@ def only_scale_resize(scale, infile):
     return resized_image
 
 
+def select_resize_mode(user_argument):
+    if user_argument.scale:
+        image = only_scale_resize(user_argument.scale,
+                                  user_argument.infile)
+    elif user_argument.width and user_argument.height:
+        image = width_and_height(user_argument.width,
+                                 user_argument.height,
+                                 user_argument.infile)
+    elif user_argument.width:
+        image = only_width(user_argument.width,
+                           user_argument.infile, )
+    elif user_argument.height:
+        image = only_height(user_argument.height,
+                            user_argument.infile, )
+    return image
+
+
 def create_filepath_to_save_image(image, infile):
     width = image.size[0]
     height = image.size[1]
@@ -76,21 +92,10 @@ if __name__ == '__main__':
     parser = create_parser_for_user_arguments()
     user_argument = parser.parse_args()
     try:
-        if user_argument.scale:
-            image = only_scale_resize(user_argument.scale,
-                                      user_argument.infile)
-        elif user_argument.width and user_argument.height:
-            image = width_and_height(user_argument.width,
-                                     user_argument.height,
-                                     user_argument.infile)
-            check = check_proportions(user_argument.infile, image)
-            print(check) if check is not None else None
-        elif user_argument.width:
-            image = only_width(user_argument.width,
-                               user_argument.infile, )
-        elif user_argument.height:
-            image = only_height(user_argument.height,
-                                user_argument.infile, )
+        image = select_resize_mode(user_argument)
+        check = check_proportions(user_argument.infile, image)
+        if check is not None:
+            print(check)
         if user_argument.outfile is None:
             pathfile = create_filepath_to_save_image(image,
                                                      user_argument.infile)
