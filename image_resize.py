@@ -82,5 +82,5 @@ if __name__ == '__main__':
         image
     else:
         save_new_image(image, pathfile)
-        print(check_proportions(user_argument.infile, image))
-        print('Success! Image resized!')
+        print(check_proportions(user_argument.infile, image),
+              '\nSuccess! Image resized!')
