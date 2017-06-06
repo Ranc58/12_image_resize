@@ -14,7 +14,7 @@ def create_parser_for_user_arguments():
                         help='Height of out image', type=int)
     parser.add_argument('-o', '--outfile', nargs='?',
                         help='Way and name of image to save', type=str)
-    return parser
+    return parser.parse_args()
 
 
 def check_proportions(infile, image):
@@ -39,22 +39,21 @@ def check_proportions(infile, image):
 
 def select_resize_mode(user_argument):
     image = Image.open(user_argument.infile)
-    if user_argument.scale:
-        new_width = int(image.size[0] / user_argument.scale)
-        new_height = int(image.size[1] / user_argument.scale)
-        resized_img = image.resize((new_width, new_height))
-    elif user_argument.width and user_argument.height:
-        resized_img = image.resize((user_argument.width, user_argument.height))
-    elif user_argument.width:
-        new_height = int(image.size[1] / (image.size[0] / user_argument.width))
-        resized_img = image.resize((user_argument.width, new_height))
-    elif user_argument.height:
-        new_width = int(image.size[0] / (image.size[1] / user_argument.height))
-        resized_img = image.resize((new_width, user_argument.height))
     if ((user_argument.width and user_argument.scale) or
             (user_argument.height and user_argument.scale)):
-        resized_img = print('Please enter availiable arguments combination!')
-    return resized_img
+        return print('Please enter availiable arguments combination!')
+    elif user_argument.scale:
+        new_width = int(image.size[0] / user_argument.scale)
+        new_height = int(image.size[1] / user_argument.scale)
+        return image.resize((new_width, new_height))
+    elif user_argument.width and user_argument.height:
+        return image.resize((user_argument.width, user_argument.height))
+    elif user_argument.width:
+        new_height = int(image.size[1] / (image.size[0] / user_argument.width))
+        return image.resize((user_argument.width, new_height))
+    elif user_argument.height:
+        new_width = int(image.size[0] / (image.size[1] / user_argument.height))
+        return image.resize((new_width, user_argument.height))
 
 
 def create_filepath_to_save_image(image, user_argument):
@@ -73,15 +72,15 @@ def save_new_image(image, pathfile):
 
 
 if __name__ == '__main__':
-    parser = create_parser_for_user_arguments()
-    user_argument = parser.parse_args()
+    user_argument = create_parser_for_user_arguments()
     try:
         image = select_resize_mode(user_argument)
-        print(check_proportions(user_argument.infile, image))
         pathfile = create_filepath_to_save_image(image, user_argument)
-        save_new_image(image, pathfile)
-        print('Success! Image resized!')
     except (FileNotFoundError, OSError) as error:
         print(error)
     except AttributeError:
         image
+    else:
+        save_new_image(image, pathfile)
+        print(check_proportions(user_argument.infile, image))
+        print('Success! Image resized!')
