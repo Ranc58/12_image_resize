@@ -69,6 +69,8 @@ def create_filepath_to_save_image(image, user_argument):
 
 def save_new_image(image, pathfile):
     image.save(pathfile)
+    print(check_proportions(user_argument.infile, image),
+          '\nSuccess! Image resized!')
 
 
 if __name__ == '__main__':
@@ -76,11 +78,7 @@ if __name__ == '__main__':
     try:
         image = resize_img(user_argument)
         pathfile = create_filepath_to_save_image(image, user_argument)
-    except (FileNotFoundError, OSError) as error:
+    except (FileNotFoundError, OSError, AttributeError) as error:
         print(error)
-    except AttributeError:
-        image
     else:
         save_new_image(image, pathfile)
-        print(check_proportions(user_argument.infile, image),
-              '\nSuccess! Image resized!')
