@@ -37,23 +37,23 @@ def check_proportions(infile, image):
         return match_proportions
 
 
-def select_resize_mode(user_argument):
+def resize_img(user_argument):
     image = Image.open(user_argument.infile)
+    new_width = user_argument.width
+    new_height = user_argument.height
     if ((user_argument.width and user_argument.scale) or
             (user_argument.height and user_argument.scale)):
         return print('Please enter availiable arguments combination!')
+    elif user_argument.width and user_argument.height:
+        return image.resize((new_width, new_height))
+    elif user_argument.width:
+        new_height = int(image.size[1] / (image.size[0] / user_argument.width))
+    elif user_argument.height:
+        new_width = int(image.size[0] / (image.size[1] / user_argument.height))
     elif user_argument.scale:
         new_width = int(image.size[0] / user_argument.scale)
         new_height = int(image.size[1] / user_argument.scale)
-        return image.resize((new_width, new_height))
-    elif user_argument.width and user_argument.height:
-        return image.resize((user_argument.width, user_argument.height))
-    elif user_argument.width:
-        new_height = int(image.size[1] / (image.size[0] / user_argument.width))
-        return image.resize((user_argument.width, new_height))
-    elif user_argument.height:
-        new_width = int(image.size[0] / (image.size[1] / user_argument.height))
-        return image.resize((new_width, user_argument.height))
+    return image.resize((new_width, new_height))
 
 
 def create_filepath_to_save_image(image, user_argument):
@@ -74,7 +74,7 @@ def save_new_image(image, pathfile):
 if __name__ == '__main__':
     user_argument = create_parser_for_user_arguments()
     try:
-        image = select_resize_mode(user_argument)
+        image = resize_img(user_argument)
         pathfile = create_filepath_to_save_image(image, user_argument)
     except (FileNotFoundError, OSError) as error:
         print(error)
