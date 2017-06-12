@@ -39,6 +39,3 @@ $python test.jpg -s 2
 Success! Image resized!
 ```
 Launching on Windows is same.
-# Project Goals
-
-The code is written for educational purposes. Training course for web-developers - [DEVMAN.org](https://devman.org)
